@@ -3,12 +3,13 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var graphqlHTTP = require('express-graphql');
 var platformConfigs = require('./config/config');
 var port = platformConfigs.port;
 process.env.NODE_ENV = platformConfigs.mode;
 
 var app = express();
-
+require('./data/schema');
 //mongoDB
 
 mongoose.connect('mongodb://localhost/graphqldb');
@@ -29,7 +30,10 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-
+// app.use('/graphql', graphqlHTTP({
+//     schema: MyGraphQLSchema,
+//     graphiql: true
+// }));
 require('./routes/routes')(app);
 
 app.use(function (req, res, next) {
